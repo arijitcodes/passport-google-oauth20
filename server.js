@@ -3,6 +3,8 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const passport = require("passport");
+const mongoose = require("mongoose");
+const e = require("express");
 
 // Passport Google Strategy Setup
 require("./passport");
@@ -65,8 +67,24 @@ app.get("*", (req, res) => {
   res.status(404).send("Error 404! Page Not Found!");
 });
 
+// DB Connection
+mongoose.connect(
+  process.env.MONGODB_URI,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  },
+  (err, res) => {
+    if (err) {
+      console.log("Error occured while connecting to MongoDB!");
+    } else {
+      console.log("MongoDB Connected...");
+    }
+  }
+);
+
 const port = process.env.PORT || 5000;
 
 app.listen(port, () => {
-  console.log(`Listnening on Port: ${port}`);
+  console.log(`Server Listnening on Port: ${port}`);
 });
