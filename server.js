@@ -4,7 +4,6 @@ const express = require("express");
 const app = express();
 const passport = require("passport");
 const mongoose = require("mongoose");
-const e = require("express");
 
 // Passport Google Strategy Setup
 require("./passport");
