@@ -29,7 +29,13 @@ app.use(passport.session());
 // Routes
 app.get("/", (req, res) => {
   res.send(
-    "Hello World!<br><br><a href='/auth/google'>LogIn</a> | <a href='/logout'>Logout</a> | <a href='/profile'>Profile</a>"
+    "Hello World!<br><br><a href='/login'>LogIn</a> | <a href='/logout'>Logout</a> | <a href='/profile'>Profile</a>"
+  );
+});
+
+app.get("/login", (req, res) => {
+  res.send(
+    "Login With: <a href='/auth/google'>Google</a> | <a href='/auth/github'>GitHub</a> | <a href='/auth/facebook'>Facebook</a><br><br><a href='/login'>LogIn</a> | <a href='/logout'>Logout</a> | <a href='/profile'>Profile</a>"
   );
 });
 
@@ -50,10 +56,12 @@ app.get(
 app.get("/profile", (req, res) => {
   if (req.isAuthenticated()) {
     return res.send(
-      "Secret Data<br><br><a href='/auth/google'>LogIn</a> | <a href='/logout'>Logout</a> | <a href='/profile'>Profile</a>"
+      "Secret Data<br><br><a href='/login'>LogIn</a> | <a href='/logout'>Logout</a> | <a href='/profile'>Profile</a>"
     );
   } else {
-    return res.send("Unauthorized request!");
+    return res.send(
+      "Unauthorized request!<br><br><a href='/login'>LogIn</a> | <a href='/logout'>Logout</a> | <a href='/profile'>Profile</a>"
+    );
   }
 });
 
