@@ -2,10 +2,63 @@ require("dotenv").config();
 
 const express = require("express");
 const app = express();
+const passport = require("passport");
+
+// Passport Google Strategy Setup
+require("./passport");
+
+// Middlewares
+app.use(require("body-parser").urlencoded({ extended: true }));
+app.use(require("cookie-parser")());
+app.use(
+  require("express-session")({
+    secret: "SomeRandomSecretHehehe",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24 * 7, // => Indicates 7 days
+    },
+  })
+);
+
+// Passport Middlewares
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Routes
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send(
+    "Hello World!<br><br><a href='/auth/google'>LogIn</a> | <a href='/logout'>Logout</a> | <a href='/profile'>Profile</a>"
+  );
+});
+
+app.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["email profile"] })
+);
+
+app.get(
+  "/auth/google/callback",
+  passport.authenticate("google", { failureRedirect: "/login" }),
+  (req, res) => {
+    // Successfull Authentication.
+    res.redirect("/profile");
+  }
+);
+
+app.get("/profile", (req, res) => {
+  if (req.isAuthenticated()) {
+    return res.send(
+      "Secret Data<br><br><a href='/auth/google'>LogIn</a> | <a href='/logout'>Logout</a> | <a href='/profile'>Profile</a>"
+    );
+  } else {
+    return res.send("Unauthorized request!");
+  }
+});
+
+app.get("/logout", (req, res) => {
+  req.logout();
+  res.redirect("/");
 });
 
 app.get("*", (req, res) => {
