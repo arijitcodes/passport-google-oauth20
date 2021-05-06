@@ -3,10 +3,12 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const passport = require("passport");
-const mongoose = require("mongoose");
 
 // Passport Google Strategy Setup
 require("./passport");
+
+// DB Connection
+const dbConnection = require("./config/db");
 
 // Routes
 const indexRoute = require("./routes/index");
@@ -43,21 +45,9 @@ app.use("/logout", logoutRoute);
 app.use("*", error404Route);
 
 // DB Connection
-mongoose.connect(
-  process.env.MONGODB_URI,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  },
-  (err, res) => {
-    if (err) {
-      console.log("Error occured while connecting to MongoDB!");
-    } else {
-      console.log("MongoDB Connected...");
-    }
-  }
-);
+dbConnection();
 
+// Server
 const port = process.env.PORT || 5000;
 
 app.listen(port, () => {
